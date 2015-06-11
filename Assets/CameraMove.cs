@@ -40,14 +40,21 @@ public class CameraMove : MonoBehaviour {
 		if (Input.GetKey (KeyCode.Space)) {
 			GetComponent<Rigidbody>().velocity = transform.up * 100.0f;
 		}
+		Vector3 fwd = transform.TransformDirection(Vector3.forward);
+		RaycastHit hit;
+		if (Physics.Raycast (transform.position, fwd, out hit, 10000)) {
+			file_name.text =  hit.transform.name;
+		} else {
+			file_name.text = "";
+		}
 
 //		this.transform.Translate ( 0, 0,( Input.GetAxis ( "Vertical" ) * 1 ) );
 //		this.transform.Rotate (0,( Input.GetAxis ("Horizontal" )  * 1 ),0);
 	}
 	void OnCollisionEnter(Collision collision){
-		file_name.text = collision.transform.name;
+		 //file_name.text = collision.transform.name;
 	}
 	void OnCollisionExit(Collision collision){
-		file_name.text = "";
+		//file_name.text = "";
 	}
 }

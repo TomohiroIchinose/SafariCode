@@ -42,16 +42,17 @@ public class z_hold{
 
 public class CityCreater : MonoBehaviour
 {
-		private string TARGET;
+		private string TARGET; 
 		public GameObject ground;
+		public GameObject testGround;
 		public GameObject building;
+
 		private string jsonText = "";
 		// Use this for initialization
 		void Start ()
 		{ 
 				TARGET = Application.dataPath + "/target/redmine_app.json";
 				ReadFile ();
-//		Debug.Log (jsonText);
 				CreateCity ();
 		}
 
@@ -61,6 +62,9 @@ public class CityCreater : MonoBehaviour
 				var blocks = city ["blocks"] as IList;
 				var buildings = city ["buildings"] as IList;
 				nori_rogic_ver2 (blocks, buildings);
+			/*
+			Simple (blocks, buildings);
+			 */
 		}
 
 	void nori_rogic_ver2 (IList blocks, IList buildings)
@@ -725,26 +729,39 @@ public class CityCreater : MonoBehaviour
 				
 		/* sec.4 */
 
-				foreach (Dictionary<string,object> building in buildings) {
-						var block = building ["block"].ToString ();
-						var width = float.Parse (building ["width"].ToString ());
-						var height = float.Parse (building ["height"].ToString ());
-						var name = building ["name"].ToString ();
-						GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
-						cube.name = name;
-						cube.transform.localScale = new Vector3 (width, height, width);
-						cube.transform.position = new Vector3 (maxX [block]+ width/2, height / 2, maxY [block]);
-						maxX [block] += width + 20;
-						maxW [block] = System.Math.Max (width, maxW [block]);
-				}
+		foreach (Dictionary<string,object> building in buildings) {
+			var block = building ["block"].ToString ();
+			var width = float.Parse (building ["width"].ToString ());
+			var height = float.Parse (building ["height"].ToString ());
+			var name = building ["name"].ToString ();
+			
+			GameObject clone = Instantiate(this.building,new Vector3 (maxX [block]+ width/2, height / 2, maxY [block]),transform.rotation) as GameObject;
+			clone.name = name;
+			clone.transform.localScale = new Vector3 (width, height, width);
+			
+			maxX [block] += width + 20;
+			maxW [block] = System.Math.Max (width, maxW [block]);
+		}
+
 
 		/* sec.5 */
 
 				foreach (Dictionary<string,object> block in blocks) {
+						GameObject clone;
+						var name = block ["name"].ToString ();
+			 			if(name.Contains ("test")){
+								  clone = Instantiate(this.testGround,new Vector3 (maxX [name] / 2, 1, maxY [name]),transform.rotation) as GameObject;
+						}else{
+		   						clone = Instantiate(this.ground,new Vector3 (maxX [name] / 2, 1, maxY [name]),transform.rotation) as GameObject;
+						}
+						clone.name = name;
+						clone.transform.localScale =  new Vector3 (maxX [name] +10, 2, maxW [name] + 10);
+	/*
 						var name = block ["name"].ToString ();
 						GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
 						cube.transform.localScale = new Vector3 (maxX [name] +10, 2, maxW [name] + 10);
 						cube.transform.position = new Vector3 (maxX [name] / 2, 1, maxY [name]);
+	*/
 				}
 		}
 
