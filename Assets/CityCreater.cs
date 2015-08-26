@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+  using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -42,25 +42,28 @@ public class z_hold{
 
 public class CityCreater : MonoBehaviour
 {
-		private string TARGET; 
+		public string TARGET; 
 		public GameObject ground;
 		public GameObject testGround;
-		public GameObject building;
+		public GameObject building; 
+		public Dictionary<string,object> city;
 
-		private string jsonText = "";
+		public string jsonText = "";
 		// Use this for initialization
 		void Start ()
 		{ 
-				TARGET = Application.dataPath + "/target/redmine_app.json";
+				TARGET = Application.dataPath + "/target/redmine_path.json";
 				ReadFile ();
 				CreateCity ();
-		}
+		} 
+
+	 	
 
 		void CreateCity ()
 		{
-				var city = Json.Deserialize (jsonText) as Dictionary<string,object>;
-				var blocks = city ["blocks"] as IList;
-				var buildings = city ["buildings"] as IList;
+				this.city = Json.Deserialize (jsonText) as Dictionary<string,object>;
+				var blocks = this.city ["blocks"] as IList;
+				var buildings = this.city ["buildings"] as IList;
 				nori_rogic_ver2 (blocks, buildings);
 			/*
 			Simple (blocks, buildings);
@@ -439,7 +442,7 @@ public class CityCreater : MonoBehaviour
 			GameObject clone = Instantiate(this.building,new Vector3 (building_pos.x_pos+sorted_block_list_temp[0].x_pos-e_point_x[building_pos.block_ID], (building_pos.height/2)+2, building_pos.z_pos+sorted_block_list_temp[0].z_pos-e_point_z[building_pos.block_ID]),transform.rotation) as GameObject;
 			clone.name = building_pos.building_name;
 			clone.transform.localScale = new Vector3 (building_pos.width, building_pos.height, building_pos.width);
-
+			 
 			sorted_block_list_temp.RemoveAll(d => d.block_ID == building_pos.block_ID);
 			
 			x_list_temp.RemoveAll(e => e.block_ID == building_pos.block_ID && e.building_step_cnt == 0);
@@ -650,11 +653,12 @@ public class CityCreater : MonoBehaviour
 
 					se_x=(e_point_x[building_pos.block_ID]-s_point_x[building_pos.block_ID])/2;
 					se_z=(e_point_z[building_pos.block_ID]-s_point_z[building_pos.block_ID])/2;
-
+				/*
 					GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
 					cube.name = building_pos.building_name;
 					cube.transform.localScale = new Vector3 (building_pos.width, building_pos.height, building_pos.width);
 					cube.transform.position = new Vector3 (building_pos.x_pos-s_point_x[building_pos.block_ID]+sorted_block_list[building_pos.block_ID].x_pos-se_x, (building_pos.height/2)+2, building_pos.z_pos-s_point_z[building_pos.block_ID]+sorted_block_list[building_pos.block_ID].z_pos-se_z);
+					*/
 				}
 
 				/* sec.3 */
@@ -765,7 +769,7 @@ public class CityCreater : MonoBehaviour
 				}
 		}
 
-		void ReadFile ()
+		void ReadFile () 
 		{
 				FileInfo file = new FileInfo (TARGET);
 				try {
@@ -780,6 +784,10 @@ public class CityCreater : MonoBehaviour
 		string SetDefaultText ()
 		{
 				return "cant read\n";
+		}
+	 
+		public Dictionary<string,object> GetCity(){
+			return this.city;
 		}
 	
 		// Update is called once per frame
